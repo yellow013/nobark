@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2018-2022 nobark (tools4j), Marco Terzer, Anton Anufriev
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -48,7 +48,8 @@ public interface IdleStrategy {
     }
 
     /** Invoked if some work was performed and an idle strategy should reset to prepare for the next idle phase */
-    default void reset() {}
+    default void reset() {
+    }
 
     /**
      * Idle strategy that performs a no-OP, that is, an idle loop will essentially become a busy-spin loop.
@@ -64,4 +65,5 @@ public interface IdleStrategy {
             //no op
         }
     };
+
 }

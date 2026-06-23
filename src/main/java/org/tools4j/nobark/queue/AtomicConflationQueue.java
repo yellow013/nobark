@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2018-2022 nobark (tools4j), Marco Terzer, Anton Anufriev
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -46,6 +46,7 @@ import java.util.function.Supplier;
  * @param <V> the type of elements in the queue
  */
 public class AtomicConflationQueue<K,V> implements ConflationQueue<K,V> {
+
     private final Queue<Entry<K,V>> queue;
     private final Map<K,Entry<K,V>> entryMap;
 
@@ -186,7 +187,7 @@ public class AtomicConflationQueue<K,V> implements ConflationQueue<K,V> {
         public V enqueue(final K conflationKey, final V value) {
             Objects.requireNonNull(value);
             final Entry<K,V> entry = entryMap.computeIfAbsent(conflationKey, k -> new Entry<>(k, null));
-            final V old = entry.value.getAndSet(value);
+            final V old = entry.value().getAndSet(value);
             final AppenderListener.Conflation conflation;
             if (old == null) {
                 queue.add(entry);
@@ -204,9 +205,9 @@ public class AtomicConflationQueue<K,V> implements ConflationQueue<K,V> {
         public V poll(final BiConsumer<? super K, ? super V> consumer) {
             final Entry<K,V> entry = queue.poll();
             if (entry != null) {
-                final V value = entry.value.getAndSet(null);
-                consumer.accept(entry.key, value);
-                pollerListener.polled(AtomicConflationQueue.this, entry.key, value);
+                final V value = entry.value().getAndSet(null);
+                consumer.accept(entry.key(), value);
+                pollerListener.polled(AtomicConflationQueue.this, entry.key(), value);
                 return value;
             } else {
                 pollerListener.polledButFoundEmpty(AtomicConflationQueue.this);

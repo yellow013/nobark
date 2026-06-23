@@ -35,13 +35,6 @@ For best performance, this optimisation needs to be unlocked as follows:
 java -XX:-RestrictContended ...
 ```
 
-### Gradle
-```gradle
-dependencies {
-    compile 'org.tools4j:tools4j-nobark:1.5'
-}
-```
-
 ### Maven
 ```xml
 <dependency>

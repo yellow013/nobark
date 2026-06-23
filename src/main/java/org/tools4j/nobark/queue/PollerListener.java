@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2018-2022 nobark (tools4j), Marco Terzer, Anton Anufriev
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  * @param <V> the type of values in the queue
  */
 @FunctionalInterface
-public interface PollerListener<K,V> {
+public interface PollerListener<K, V> {
 
     /**
      * Called whenever a value is polled via any of the {@link ConflationQueue.Poller#poll() poll} methods.  By default
@@ -63,7 +63,8 @@ public interface PollerListener<K,V> {
     /**
      * Constant for a no-op listener.
      */
-    PollerListener<Object,Object> NOOP = (q, k, v) -> {};
+    PollerListener<Object, Object> NOOP = (q, k, v) -> {
+    };
 
     /**
      * Creates a poller listener that delegates to thread-local listener instances created on demand by the given
@@ -75,9 +76,9 @@ public interface PollerListener<K,V> {
      * @param <V> the type of values in the queue
      * @return a listener that delegates to thread-local listener instances
      */
-    static <K,V> PollerListener<K,V> threadLocal(final Supplier<? extends PollerListener<K,V>> listenerSupplier) {
-        final ThreadLocal<PollerListener<K,V>> threadLocal = ThreadLocal.withInitial(listenerSupplier);
-        return (q,k,v) -> threadLocal.get().polled(q,k,v);
+    static <K, V> PollerListener<K, V> threadLocal(final Supplier<? extends PollerListener<K, V>> listenerSupplier) {
+        final ThreadLocal<PollerListener<K, V>> threadLocal = ThreadLocal.withInitial(listenerSupplier);
+        return (q, k, v) -> threadLocal.get().polled(q, k, v);
     }
 
     /**
@@ -90,7 +91,7 @@ public interface PollerListener<K,V> {
      * @param <L> the poller listener (sub-)type
      * @return a supplier creating thread-local listener instances
      */
-    static <L extends PollerListener<?,?>> Supplier<L> threadLocalSupplier(final Supplier<L> listenerSupplier) {
+    static <L extends PollerListener<?, ?>> Supplier<L> threadLocalSupplier(final Supplier<L> listenerSupplier) {
         return ThreadLocal.withInitial(listenerSupplier)::get;
     }
 }

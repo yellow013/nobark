@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2018-2022 nobark (tools4j), Marco Terzer, Anton Anufriev
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,7 +23,7 @@
  */
 package org.tools4j.nobark.queue;
 
-import sun.misc.Contended;
+import jdk.internal.vm.annotation.Contended;
 
 import java.util.List;
 import java.util.Map;
@@ -225,7 +225,7 @@ public class EvictConflationQueue<K,V> implements ExchangeConflationQueue<K,V> {
             Objects.requireNonNull(value);
             final Entry<K, MarkedValue<V>> entry = entryMap.computeIfAbsent(conflationKey, k -> new Entry<>(k, new MarkedValue<>()));
             final MarkedValue<V> newValue = markedValue.initializeWithUsed(value);
-            final MarkedValue<V> oldValue = entry.value.getAndSet(newValue);
+            final MarkedValue<V> oldValue = entry.value().getAndSet(newValue);
             final AppenderListener.Conflation conflation;
             if (oldValue.isUnused()) {
                 queue.add(entry);
@@ -250,11 +250,11 @@ public class EvictConflationQueue<K,V> implements ExchangeConflationQueue<K,V> {
             final Entry<K,MarkedValue<V>> entry = queue.poll();
             if (entry != null) {
                 final MarkedValue<V> exchangeValue = markedValue.initalizeWithUnused(exchange);
-                final MarkedValue<V> polledValue = entry.value.getAndSet(exchangeValue);
+                final MarkedValue<V> polledValue = entry.value().getAndSet(exchangeValue);
                 final V value = polledValue.markUnusedAndRelease();
                 markedValue = polledValue;
-                consumer.accept(entry.key, value);
-                pollerListener.polled(EvictConflationQueue.this, entry.key, value);
+                consumer.accept(entry.key(), value);
+                pollerListener.polled(EvictConflationQueue.this, entry.key(), value);
                 return value;
             } else {
                 pollerListener.polledButFoundEmpty(EvictConflationQueue.this);

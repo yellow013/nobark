@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2018-2022 nobark (tools4j), Marco Terzer, Anton Anufriev
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,7 +36,8 @@ import java.util.function.Supplier;
  * @param <V> the type of values in the queue
  */
 @FunctionalInterface
-public interface AppenderListener<K,V> {
+public interface AppenderListener<K, V> {
+
     /**
      * The type of conflation that occurred when an element was enqueued.
      */
@@ -73,7 +74,8 @@ public interface AppenderListener<K,V> {
     /**
      * Constant for a no-op listener.
      */
-    AppenderListener<Object,Object> NOOP = (q, k, v, o, c) -> {};
+    AppenderListener<Object, Object> NOOP = (q, k, v, o, c) -> {
+    };
 
     /**
      * Creates an appender listener that delegates to thread-local listener instances created on demand by the given
@@ -85,9 +87,9 @@ public interface AppenderListener<K,V> {
      * @param <V> the type of values in the queue
      * @return a listener that delegates to thread-local listener instances
      */
-    static <K,V> AppenderListener<K,V> threadLocal(final Supplier<? extends AppenderListener<K,V>> listenerSupplier) {
-        final ThreadLocal<AppenderListener<K,V>> threadLocal = ThreadLocal.withInitial(listenerSupplier);
-        return (q,k,v,o,c) -> threadLocal.get().enqueued(q,k,v,o,c);
+    static <K, V> AppenderListener<K, V> threadLocal(final Supplier<? extends AppenderListener<K, V>> listenerSupplier) {
+        final ThreadLocal<AppenderListener<K, V>> threadLocal = ThreadLocal.withInitial(listenerSupplier);
+        return (q, k, v, o, c) -> threadLocal.get().enqueued(q, k, v, o, c);
     }
 
     /**
@@ -100,7 +102,7 @@ public interface AppenderListener<K,V> {
      * @param <L> the appender listener (sub-)type
      * @return a supplier creating thread-local listener instances
      */
-    static <L extends AppenderListener<?,?>> Supplier<L> threadLocalSupplier(final Supplier<L> listenerSupplier) {
+    static <L extends AppenderListener<?, ?>> Supplier<L> threadLocalSupplier(final Supplier<L> listenerSupplier) {
         return ThreadLocal.withInitial(listenerSupplier)::get;
     }
 }
